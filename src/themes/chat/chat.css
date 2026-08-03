@@ -155,6 +155,31 @@
   border-bottom: 1px solid var(--chat-border);
 }
 
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 좁은 화면 전용 사이드바 드로어 트리거(v0.1.16 §2) -- 넓은 화면에서는 고정 사이드바가
+   이미 보이므로 숨긴다. 다른 트리거들과 마찬가지로 cursor:default로 위장 유지. */
+.chat-hamburger {
+  display: none;
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #3d3f47;
+  font-size: 1.05rem;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: default;
+}
+
+.chat-hamburger:hover {
+  background: #f2f2f4;
+}
+
 .chat-model-selector {
   appearance: none;
   border: none;
@@ -598,9 +623,45 @@
   padding: 0;
 }
 
-@media (max-width: 760px) {
+/* 사이드바 배경 오버레이(v0.1.16 §2) -- 드로어가 열렸을 때만 좁은 화면에서 렌더링되며
+   (JSX에서 sidebarOpen일 때만 렌더), 넓은 화면에서는 기본 display:none으로 안전하게 무시. */
+.chat-sidebar-backdrop {
+  display: none;
+}
+
+/* v0.1.16 §2: 좁은 화면에서 사이드바는 기본 숨김 + 햄버거로 여는 드로어(오버레이)가 된다.
+   워크플로우 선택/바깥 탭 시 JSX에서 sidebarOpen을 false로 되돌려 닫는다. 좌하단 플랜 칩은
+   사이드바 안에 그대로 있으므로 드로어 상태에서도 함께 보인다. 넓은 화면은 기존 고정
+   사이드바 그대로(아래 규칙은 이 미디어쿼리 밖에서는 적용되지 않는다). */
+@media (max-width: 640px) {
+  .chat-hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .chat-sidebar {
     display: none;
+  }
+
+  .chat-sidebar[data-open='true'] {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 82vw;
+    max-width: 300px;
+    z-index: 50;
+    box-shadow: 2px 0 18px rgba(0, 0, 0, 0.18);
+  }
+
+  .chat-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 30, 0.32);
+    z-index: 40;
   }
 }
 

@@ -5,6 +5,8 @@
  * v0.1.1: 헤더 아래 워크플로우 탭바 추가, 가짜 상태바는 log 기반 useFakeMetrics로 교체.
  * v0.1.2: 헤더/탭바 어디에도 "스텝 i/n" 진행 분수를 노출하지 않는다 -- 진행도는 하단
  * 상태바 우측의 사용량 막대(usage bar) + 퍼센트로만 위장 표기한다(deriveUsage 참고).
+ * v0.1.16: 헤더 라인 클릭/탭으로도 메뉴가 열린다(Esc와 병행, 모바일 지원) -- 커서 포인터
+ * 등 시각 단서는 넣지 않는다(위장 유지).
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -28,6 +30,7 @@ export function TerminalTheme(props: ThemeProps) {
     workflows,
     activeWorkflowId,
     onSelectWorkflow,
+    onOpenMenu,
   } = props;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [shaking, setShaking] = useState(false);
@@ -51,7 +54,15 @@ export function TerminalTheme(props: ThemeProps) {
 
   return (
     <div className="term-root" onClick={focusInput}>
-      <header className="term-header">
+      <header
+        className="term-header"
+        onClick={(e) => {
+          // v0.1.16: 헤더 탭/클릭으로 메뉴 오픈(Esc 없는 모바일 지원). stopPropagation으로
+          // 이 클릭이 term-root의 onClick(focusInput)까지 같이 튀지 않게 막는다.
+          e.stopPropagation();
+          onOpenMenu();
+        }}
+      >
         <span className="term-header-title">{'✳ agent-cli v0.1.0 · ~/work'}</span>
       </header>
 

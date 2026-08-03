@@ -377,6 +377,21 @@
   color: #3d4048;
 }
 
+/* v0.1.16 §2: 좁은 화면에서 usage·resets가 잘리지 않도록 상태바를 두 줄로 나눈다(가로
+   스크롤 금지) -- 윗줄 tokens·context·tok/s, 아랫줄 usage 막대·resets. 넓은 화면은 기존
+   한 줄(justify-content: space-between으로 두 그룹이 나란히) 그대로 유지. */
+@media (max-width: 640px) {
+  .term-statusbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .term-statusbar-group {
+    justify-content: space-between;
+  }
+}
+
 @media (max-width: 560px) {
   .term-root {
     font-size: 13px;

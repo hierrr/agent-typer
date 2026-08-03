@@ -1,5 +1,6 @@
 /**
- * 앱 셸 — 워크플로우(3~6스텝) 진행, 테마 선택/폴백, Esc 오버레이 메뉴,
+ * 앱 셸 — 워크플로우(3~6스텝) 진행, 테마 선택/폴백, Esc 오버레이 메뉴(+ v0.1.16: 헤더
+ * 타이틀 클릭/탭으로도 열림 — Esc 없는 모바일 지원, 테마가 onOpenMenu로 호출),
  * document.title 위장, SessionReport 전환을 담당한다.
  * 실제 스텝 판정/재생은 engine/typing.ts(useRoundEngine)에 위임하고,
  * 화면 렌더링은 등록된 테마 컴포넌트(theme-api.ts)에 위임한다.
@@ -168,6 +169,7 @@ export default function App() {
             activeWorkflowId={currentWorkflow.id}
             completedStepCount={rounds.length}
             onSelectWorkflow={handleSelectWorkflow}
+            onOpenMenu={() => setMenuOpen(true)}
           />
           {menuOpen && (
             <MenuOverlay

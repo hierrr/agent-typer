@@ -34,6 +34,11 @@
  *     시작한 뒤로 더 이상 증가하지 않아 100%에 도달하지 못하는 버그가 있었다 — 대신
  *     completedStepCount는 스텝 i 진행 중엔 i, 마지막 스텝 제출 즉시 roundCount가 되고
  *     보고서를 닫아도 다음 워크플로우 시작 전까지 유지된다.
+ *   - v0.1.16: Esc가 없는 모바일을 위해 헤더 타이틀 클릭/탭으로도 메뉴가 열려야 한다 --
+ *     handlers.onOpenMenu()를 헤더 트리거에 연결한다(terminal=헤더 라인, chat=상단 헤더
+ *     전체, desktop=타이틀바 중앙 텍스트만). 트리거 onClick은 반드시 e.stopPropagation()해서
+ *     같은 클릭이 루트 컨테이너의 onClick(inputRef.focus())까지 같이 튀지 않게 한다. 커서
+ *     포인터 등 과한 시각 단서는 넣지 않는다(위장 유지) — Esc 단축키도 그대로 병행 유지.
  */
 
 import type React from 'react';
@@ -89,6 +94,8 @@ export interface ThemeProps {
   completedStepCount: number;
   /** 피커에서 워크플로우를 선택했을 때 호출 — 진행 중이던 스텝은 확인 없이 버려지고 새로 시작한다. */
   onSelectWorkflow: (id: string) => void;
+  /** v0.1.16: 헤더 타이틀 클릭/탭 트리거가 호출 — Esc와 병행하는 모바일용 메뉴 오픈 경로. */
+  onOpenMenu: () => void;
 }
 
 export type ThemeComponent = React.FC<ThemeProps>;
