@@ -1,0 +1,279 @@
+/* 공용 오버레이(Esc 메뉴 / 세션 리포트) — 어떤 테마 위에 떠도 어색하지 않도록
+   테마색과 무관한 중립 다크 스타일을 쓴다. */
+
+.at-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 9, 12, 0.72);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.at-panel {
+  width: min(560px, 100%);
+  max-height: min(720px, 90vh);
+  overflow-y: auto;
+  background: #16181d;
+  color: #e8e9ec;
+  border: 1px solid #2c2f36;
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  padding: 28px 28px 24px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+.at-panel h1,
+.at-panel h2 {
+  margin: 0 0 6px;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.at-panel h1 {
+  font-size: 1.35rem;
+}
+
+.at-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7d8290;
+  margin: 0 0 4px;
+}
+
+.at-panel-sub {
+  color: #9aa0ad;
+  font-size: 0.88rem;
+  margin: 0 0 20px;
+}
+
+.at-menu-section {
+  margin-bottom: 20px;
+}
+
+.at-menu-section:last-child {
+  margin-bottom: 0;
+}
+
+.at-menu-label {
+  font-size: 0.75rem;
+  color: #7d8290;
+  margin: 0 0 8px;
+}
+
+.at-theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.at-btn {
+  appearance: none;
+  border: 1px solid #2c2f36;
+  background: #1d2027;
+  color: #e8e9ec;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 0.92rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.at-btn:hover {
+  background: #262a33;
+  border-color: #3a3f4a;
+}
+
+.at-btn[data-active='true'] {
+  border-color: #5b8cff;
+  background: #1c2540;
+}
+
+.at-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.at-btn-tag {
+  font-size: 0.7rem;
+  color: #7d8290;
+}
+
+.at-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.at-actions .at-btn {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.at-btn-primary {
+  background: #2b3e78;
+  border-color: #45599c;
+}
+
+.at-btn-primary:hover {
+  background: #34478c;
+}
+
+.at-btn-danger-ish {
+  background: #241a1c;
+  border-color: #4a2d31;
+}
+
+/* --- SessionReport --- */
+
+.at-report-headline {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 18px;
+  line-height: 1.4;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.at-brag-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 20px;
+  border-top: 1px solid #24262d;
+}
+
+.at-brag-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #24262d;
+}
+
+.at-brag-icon {
+  font-size: 1.05rem;
+  width: 1.4em;
+  text-align: center;
+  flex: none;
+  line-height: 1.4;
+}
+
+.at-brag-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.at-brag-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.at-brag-label {
+  color: #9aa0ad;
+  font-size: 0.85rem;
+  flex: 1 1 auto;
+}
+
+.at-brag-value {
+  font-weight: 600;
+  font-size: 0.98rem;
+  white-space: nowrap;
+  flex: none;
+}
+
+.at-brag-caption {
+  color: #7d8290;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.at-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.at-copy-feedback {
+  font-size: 0.78rem;
+  color: #7ee787;
+  margin-left: 8px;
+}
+
+/* --- 오타 상세 / 위장 목록 (SessionReport) -- 두 모드가 같은 목록 구조를 공유(v0.1.4 §1),
+   기본 접힘 상태로 시작해 헤더 클릭으로 펼친다(v0.1.15 §1) --- */
+
+.at-mistakes {
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.at-mistakes-header {
+  appearance: none;
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0 8px;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.at-mistakes-label {
+  font-size: 0.78rem;
+  color: #9aa0ad;
+}
+
+.at-mistakes-caret {
+  flex: none;
+  color: #7d8290;
+  font-size: 0.72rem;
+}
+
+.at-mistakes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.at-mistakes-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #1a1d24;
+  border: 1px solid #262a33;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.82rem;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  color: #c2c4cc;
+}
+
+.at-mistakes-count {
+  color: #7d8290;
+  font-size: 0.74rem;
+}
