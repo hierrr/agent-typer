@@ -10,6 +10,14 @@
  * v0.1.16 §2(추가): 좁은 화면에서 좌 사이드바도 기본 숨김 + 타이틀바 좌측 햄버거(☰)로 여는
  * 드로어(오버레이)가 된다(chat과 동일 패턴). 사이드바 상단 브랜드 영역을 탭하면 드로어를
  * 닫으면서 Esc 메뉴를 연다 -- 넓은 화면 고정 사이드바에서도 동일하게 동작.
+ * v0.1.17 §1: 숨은 입력을 desk-inputbar(실제 입력줄) 안으로 옮겨 배치했다 -- 모바일
+ * 키보드가 뜰 때 포커스 스크롤이 화면 상단(구 위치: fixed top:0/left:0)이 아니라 입력창
+ * 쪽으로 향하게 하기 위함. desk-inputbar는 항상 마운트되므로(내용만 조건부) 재마운트 없음.
+ * v0.1.17 §2(2차 피드백): readOnly(phase==='playing') 토글이 모바일에서 키보드를 내리는
+ * 원인으로 확인돼 제거했다 -- playing 중 입력 무시는 handleInput의 phase 게이트만으로
+ * 충분(포커스 불변 원칙). 조합(IME) 중에는 scroll-follow effect와 루트 탭 리포커스 모두
+ * 개입을 스킵한다(조합 보호 강화). visualViewport resize(키보드 온/오프)마다 스크롤을
+ * 최하단으로 재고정한다(하단 고정).
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -48,12 +56,39 @@ export function DesktopTheme(props: ThemeProps) {
     return () => clearTimeout(t);
   }, [typing.shakeToken]);
 
+  // v0.1.17 §2: 조합(IME) 중에는 어떤 프로그램적 스크롤 개입도 금지한다(실기기에서 확인된
+  // 원인 -- 조합 중 매 키 입력마다 scrollTop을 강제로 바꾸면 IME/키보드가 끊길 수 있다).
+  // typing.composing이 false로 돌아오면(compositionend) 이 effect가 다시 돌아 자연스럽게
+  // 따라잡는다.
   useEffect(() => {
+    if (typing.composing) return;
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [log, typing.value, phase]);
+  }, [log, typing.value, typing.composing, phase]);
 
-  const focusInput = () => inputRef.current?.focus();
+  // v0.1.17 §2(4): visualViewport resize(키보드 온/오프) 때마다 트랜스크립트를 최하단으로
+  // 재고정한다. 위 effect와 같은 규칙(조합 중 스킵)을 따른다.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const onResize = () => {
+      if (typing.composing) return;
+      const el = scrollRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    };
+    vv.addEventListener('resize', onResize);
+    return () => vv.removeEventListener('resize', onResize);
+  }, [typing.composing]);
+
+  // v0.1.17 §2: preventScroll + 조합 보호 -- (1) 조합 중엔 루트 탭 리포커스를 스킵, (2)
+  // 이미 포커스면 focus() 재호출도 no-op(document.activeElement 체크), (3) 사용자가 직접
+  // 키보드를 내려(blur) 둔 상태는 화면 탭 시에만 복귀(이 함수 자체가 그 유일한 복귀 경로).
+  const focusInput = () => {
+    if (typing.composing) return;
+    const el = inputRef.current;
+    if (!el || document.activeElement === el) return;
+    el.focus({ preventScroll: true });
+  };
   const showGhost = phase === 'briefing' || phase === 'typing';
   const working = phase === 'playing';
   const metrics = deriveDesktopMetrics(liveStats);
@@ -199,6 +234,28 @@ export function DesktopTheme(props: ThemeProps) {
                 <button type="button" className="desk-send-btn" aria-label="전송">
                   {'↑'}
                 </button>
+
+                {/* v0.1.17: desk-inputbar(실제 입력줄) 안, 항상 마운트된 위치에 둔다 --
+                    showGhost 조건부 블록 밖이라 phase 전환에도 재마운트되지 않는다(IME
+                    조합 보존). position:absolute라 레이아웃에 영향 없음. readOnly는 두지
+                    않는다(포커스 불변 원칙) -- playing 중 입력 무시는 handlers.onInput
+                    내부의 phase 게이트만으로 처리한다. */}
+                <input
+                  ref={inputRef}
+                  className="desk-hidden-input"
+                  onInput={handlers.onInput}
+                  onCompositionStart={handlers.onCompositionStart}
+                  onCompositionEnd={handlers.onCompositionEnd}
+                  onKeyDown={handlers.onKeyDown}
+                  onPaste={handlers.onPaste}
+                  onSelect={handlers.onSelectionChange}
+                  onMouseUp={handlers.onSelectionChange}
+                  onFocus={handlers.onSelectionChange}
+                  autoFocus
+                  autoComplete="off"
+                  spellCheck={false}
+                  aria-label="타이핑 입력"
+                />
               </div>
             </div>
           </div>
@@ -219,24 +276,6 @@ export function DesktopTheme(props: ThemeProps) {
           </span>
         </footer>
       </div>
-
-      <input
-        ref={inputRef}
-        className="desk-hidden-input"
-        readOnly={phase === 'playing'}
-        onInput={handlers.onInput}
-        onCompositionStart={handlers.onCompositionStart}
-        onCompositionEnd={handlers.onCompositionEnd}
-        onKeyDown={handlers.onKeyDown}
-        onPaste={handlers.onPaste}
-        onSelect={handlers.onSelectionChange}
-        onMouseUp={handlers.onSelectionChange}
-        onFocus={handlers.onSelectionChange}
-        autoFocus
-        autoComplete="off"
-        spellCheck={false}
-        aria-label="타이핑 입력"
-      />
     </div>
   );
 }

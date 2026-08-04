@@ -17,6 +17,13 @@
 
   position: fixed;
   inset: 0;
+  /* v0.1.17: 모바일 키보드 대응(뷰포트 높이가 즉시 줄어드는 dvh 사용) -- 아래 세 줄은
+     의도적 폴백 체인: 100vh(구형 브라우저) → 100dvh(동적 뷰포트 지원 브라우저) →
+     --app-vvh(visualViewport 리스너가 App.tsx에서 세팅, 최신값 우선, 미설정 시 100dvh로
+     자동 폴백). */
+  height: 100vh;
+  height: 100dvh;
+  height: var(--app-vvh, 100dvh);
   display: flex;
   background: var(--desk-backdrop-bg);
   color: var(--desk-text);
@@ -594,6 +601,8 @@
   background: #1f2127;
   border-radius: 14px;
   padding: 10px 10px 10px 16px;
+  /* v0.1.17: desk-hidden-input(포커스 스크롤 대상)의 absolute 배치 기준점 */
+  position: relative;
 }
 
 .desk-ghost {
@@ -713,9 +722,12 @@
 
 /* --- hidden input --- */
 
+/* v0.1.17: 실제 입력줄(desk-inputbar) 안에 배치 -- 모바일 키보드가 뜰 때 포커스 스크롤이
+   여기(실제 입력창)로 향하게 한다(구: fixed top:0/left:0라 화면 맨 위로 스크롤되던 문제).
+   position:absolute라 레이아웃 흐름에는 영향 없음(시각적 불변 유지). */
 .desk-hidden-input {
-  position: fixed;
-  top: 0;
+  position: absolute;
+  bottom: 0;
   left: 0;
   width: 1px;
   height: 1px;

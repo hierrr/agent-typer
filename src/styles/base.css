@@ -23,6 +23,8 @@ body {
 
 #root {
   min-height: 100vh;
+  /* v0.1.17: 모바일 키보드 대응 -- dvh 미지원 브라우저는 위 100vh로 폴백(선언 순서 유지). */
+  min-height: 100dvh;
 }
 
 button {

@@ -10,6 +10,11 @@
  * v0.1.2/v0.1.3: 언어 필터 기능은 완전히 제거됐다 — 피커는 항상 전체 워크플로우 목록을
  * 보여주고(순서는 data/index.ts가 언어/카테고리 인터리브로 결정), 언어 구분은 제목만으로 한다.
  * "계속 일하기"/"다른 업무 시작"도 전체 목록 기준으로 동작한다.
+ * v0.1.17: 모바일 소프트 키보드가 뜰 때 레이아웃이 이를 반영하도록 window.visualViewport
+ * 리스너로 --app-vvh(실측 시각 뷰포트 높이) CSS 변수를 문서 루트에 세팅한다. 세 테마의
+ * 루트 컨테이너(.term-root/.chat-root/.desk-backdrop)가 이 변수를 height 폴백 체인의
+ * 최우선 값으로 사용한다(100vh → 100dvh → var(--app-vvh, 100dvh)). visualViewport
+ * 미지원 브라우저는 이 effect가 조용히 no-op하고 100dvh/100vh 폴백만 적용된다.
  */
 
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
@@ -86,6 +91,24 @@ export default function App() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [screen]);
+
+  // v0.1.17: 모바일 키보드 대응 -- visualViewport의 실측 높이를 --app-vvh로 문서 루트에
+  // 반영한다. 세 테마 루트가 이 값을 100dvh보다 우선 사용해, 키보드가 뜰 때(레이아웃
+  // 뷰포트는 그대로인 브라우저에서도) 입력줄+최근 로그가 키보드 뒤로 가려지지 않게 한다.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => {
+      document.documentElement.style.setProperty('--app-vvh', `${vv.height}px`);
+    };
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, []);
 
   const resolvedThemeId = resolveThemeId(themeId);
   const themeDef = getTheme(resolvedThemeId);
