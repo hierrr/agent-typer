@@ -1,9 +1,21 @@
-/* 전역 리셋 + 테마 공통 베이스. 테마별 세부 스타일은 각 테마 폴더의 css에서. */
+/* 전역 리셋 + 테마 공통 베이스. 테마별 세부 스타일은 각 테마 폴더의 css에서.
+   v0.1.18: 라이트/다크 모드 — index.html 선주입 스크립트와 ui/color-mode.ts가 해석된
+   값(light|dark)을 <html data-color-mode>에 세팅하고, CSS는 그 속성만 보고 팔레트를
+   바꾼다(각 테마 css 말미의 override 블록). 다크가 기본값(속성 미세팅 시 기존 모습). */
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+:root {
+  /* 스크롤바·폼 컨트롤 등 브라우저 기본 UI 색을 모드에 맞춘다 */
+  color-scheme: dark;
+}
+
+:root[data-color-mode='light'] {
+  color-scheme: light;
 }
 
 html,
@@ -19,6 +31,11 @@ body {
   text-rendering: optimizeLegibility;
   background: #0b0c0f;
   color: #d7d9de;
+}
+
+:root[data-color-mode='light'] body {
+  background: #f9f9f7;
+  color: #33363d;
 }
 
 #root {

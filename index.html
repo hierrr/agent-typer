@@ -4,6 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0c0f" />
+    <script>
+      // v0.1.18: 라이트/다크 모드 — React 마운트 전에 저장된 설정(없으면 기기 설정)을
+      // <html data-color-mode>로 해석해 첫 페인트부터 올바른 팔레트를 적용한다(FOUC 방지).
+      // 저장 키·해석 규칙은 src/ui/color-mode.ts와 반드시 일치해야 한다.
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('agenttyper.color-mode');
+        } catch (e) {}
+        var scheme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+        document.documentElement.setAttribute('data-color-mode', scheme);
+        if (scheme === 'light') {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', '#f9f9f7');
+        }
+      })();
+    </script>
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <title>AgentTyper</title>
   </head>

@@ -1,4 +1,7 @@
-/* chat 테마 -- 밝은 웹챗류 위장. 완전 오프라인, 시스템 산세리프 폰트만 사용. */
+/* chat 테마 -- 밝은 웹챗류 위장. 완전 오프라인, 시스템 산세리프 폰트만 사용.
+   v0.1.18: 라이트/다크 모드 -- 색은 전부 .chat-root의 변수로 승격(라이트 기본값 = 기존 값
+   그대로, 이 테마만 라이트가 원형), 다크는 root 블록 다음의 override 블록에서 변수만
+   교체한다(웹챗 서비스들의 다크 스킨 문법). */
 
 .chat-root {
   --chat-bg: #ffffff;
@@ -17,6 +20,25 @@
   --chat-warn-text: #92620a;
   --chat-err-bg: #fdecec;
   --chat-err-text: #c0392f;
+  --chat-hover: #f2f2f4; /* 모델 셀렉터·햄버거·툴 헤더 hover */
+  --chat-btn-hover: #f0f0f2; /* 새 채팅 버튼 hover */
+  --chat-convo-hover: #ececef; /* 대화 목록 hover */
+  --chat-fg-soft: #4a4d57; /* 대화 목록·툴 본문·diff 헤더 텍스트 */
+  --chat-fg-mid: #3d3f47; /* 햄버거·모델 셀렉터 텍스트 */
+  --chat-raise: #f3f4f6; /* 어시스턴트 말풍선·diff 헤더 배경 */
+  --chat-card-bg: #fbfbfc; /* 툴 카드·diff 본문 배경 */
+  --chat-tool-body-bg: #f7f7f8;
+  --chat-dots: #b7bac3;
+  --chat-diff-add-fg: #1c7c3f;
+  --chat-diff-add-bg: #eaf7ee;
+  --chat-diff-del-fg: #c0392f;
+  --chat-diff-del-bg: #fdecec;
+  --chat-diff-ctx: #6b6e78;
+  --chat-track: #ececf0;
+  --chat-untyped: #b3b6bf;
+  --chat-correct: #16171b;
+  --chat-send-fg: #ffffff;
+  --chat-backdrop: rgba(20, 20, 30, 0.32);
 
   position: fixed;
   inset: 0;
@@ -34,6 +56,45 @@
   font-size: 14.5px;
   line-height: 1.55;
   cursor: text;
+}
+
+/* v0.1.18: 다크 팔레트 -- 규칙 자체는 위 라이트 기본값과 공유. */
+:root[data-color-mode='dark'] .chat-root {
+  --chat-bg: #212327;
+  --chat-sidebar-bg: #1a1b1f;
+  --chat-border: #34363c;
+  --chat-text: #e6e7ea;
+  --chat-dim: #8b8f99;
+  --chat-accent: #5b7ef7;
+  --chat-accent-soft: #262f4d;
+  --chat-red: #e5686b;
+  --chat-red-underline: #d99a9c;
+  --chat-amber: #d9a441;
+  --chat-green-bg: #1e3527;
+  --chat-green-text: #6fcf87;
+  --chat-warn-bg: #3a2f16;
+  --chat-warn-text: #dfb654;
+  --chat-err-bg: #3c2326;
+  --chat-err-text: #e5787b;
+  --chat-hover: #26282d;
+  --chat-btn-hover: #26282d;
+  --chat-convo-hover: #24262b;
+  --chat-fg-soft: #b3b6bf;
+  --chat-fg-mid: #c9ccd3;
+  --chat-raise: #2a2c31;
+  --chat-card-bg: #24262b;
+  --chat-tool-body-bg: #1d1f23;
+  --chat-dots: #5c616c;
+  --chat-diff-add-fg: #6fcf87;
+  --chat-diff-add-bg: #1e3527;
+  --chat-diff-del-fg: #e5787b;
+  --chat-diff-del-bg: #3c2326;
+  --chat-diff-ctx: #8b8f99;
+  --chat-track: #34363c;
+  --chat-untyped: #5f636d;
+  --chat-correct: #f2f3f5;
+  --chat-send-fg: #1e1f24;
+  --chat-backdrop: rgba(0, 0, 0, 0.5);
 }
 
 .chat-mono {
@@ -92,7 +153,7 @@
 }
 
 .chat-newchat-btn:hover {
-  background: #f0f0f2;
+  background: var(--chat-btn-hover);
 }
 
 .chat-newchat-plus {
@@ -111,7 +172,7 @@
   appearance: none;
   border: none;
   background: transparent;
-  color: #4a4d57;
+  color: var(--chat-fg-soft);
   text-align: left;
   padding: 8px 10px;
   border-radius: 8px;
@@ -124,7 +185,7 @@
 }
 
 .chat-convo-item:hover {
-  background: #ececef;
+  background: var(--chat-convo-hover);
 }
 
 .chat-convo-item[data-active='true'] {
@@ -175,7 +236,7 @@
   appearance: none;
   border: none;
   background: transparent;
-  color: #3d3f47;
+  color: var(--chat-fg-mid);
   font-size: 1.05rem;
   line-height: 1;
   padding: 6px 8px;
@@ -184,14 +245,14 @@
 }
 
 .chat-hamburger:hover {
-  background: #f2f2f4;
+  background: var(--chat-hover);
 }
 
 .chat-model-selector {
   appearance: none;
   border: none;
   background: transparent;
-  color: #3d3f47;
+  color: var(--chat-fg-mid);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 600;
@@ -204,7 +265,7 @@
 }
 
 .chat-model-selector:hover {
-  background: #f2f2f4;
+  background: var(--chat-hover);
 }
 
 .chat-model-caret {
@@ -250,7 +311,7 @@
 }
 
 .chat-bubble-assistant {
-  background: #f3f4f6;
+  background: var(--chat-raise);
   color: var(--chat-text);
   border-bottom-left-radius: 4px;
 }
@@ -287,7 +348,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #b7bac3;
+  background: var(--chat-dots);
   animation: chat-bounce 1.1s ease-in-out infinite;
 }
 
@@ -319,7 +380,7 @@
   border-radius: 10px;
   overflow: hidden;
   max-width: min(80%, 640px);
-  background: #fbfbfc;
+  background: var(--chat-card-bg);
 }
 
 .chat-tool-head {
@@ -339,7 +400,7 @@
 }
 
 .chat-tool-head:hover {
-  background: #f2f2f4;
+  background: var(--chat-hover);
 }
 
 .chat-tool-chevron {
@@ -374,8 +435,8 @@
   padding: 9px 12px;
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 0.8rem;
-  color: #4a4d57;
-  background: #f7f7f8;
+  color: var(--chat-fg-soft);
+  background: var(--chat-tool-body-bg);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -391,11 +452,11 @@
 
 .chat-diff-head {
   padding: 8px 12px;
-  background: #f3f4f6;
+  background: var(--chat-raise);
   border-bottom: 1px solid var(--chat-border);
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 0.8rem;
-  color: #4a4d57;
+  color: var(--chat-fg-soft);
 }
 
 .chat-diff-glyph {
@@ -404,7 +465,7 @@
 
 .chat-diff-body {
   padding: 8px 0;
-  background: #fbfbfc;
+  background: var(--chat-card-bg);
   overflow-x: auto;
 }
 
@@ -422,17 +483,17 @@
 }
 
 .chat-diff-add {
-  color: #1c7c3f;
-  background: #eaf7ee;
+  color: var(--chat-diff-add-fg);
+  background: var(--chat-diff-add-bg);
 }
 
 .chat-diff-del {
-  color: #c0392f;
-  background: #fdecec;
+  color: var(--chat-diff-del-fg);
+  background: var(--chat-diff-del-bg);
 }
 
 .chat-diff-ctx {
-  color: #6b6e78;
+  color: var(--chat-diff-ctx);
 }
 
 /* --- status badge --- */
@@ -467,7 +528,7 @@
 .chat-usage-track {
   height: 4px;
   border-radius: 999px;
-  background: #ececf0;
+  background: var(--chat-track);
   overflow: hidden;
 }
 
@@ -526,11 +587,11 @@
 }
 
 .chat-ch-untyped {
-  color: #b3b6bf;
+  color: var(--chat-untyped);
 }
 
 .chat-ch-correct {
-  color: #16171b;
+  color: var(--chat-correct);
 }
 
 .chat-ch-wrong {
@@ -582,7 +643,7 @@
   border-radius: 50%;
   border: none;
   background: var(--chat-text);
-  color: #fff;
+  color: var(--chat-send-fg);
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
@@ -672,7 +733,7 @@
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(20, 20, 30, 0.32);
+    background: var(--chat-backdrop);
     z-index: 40;
   }
 }

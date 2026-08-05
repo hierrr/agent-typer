@@ -1,10 +1,36 @@
 /* 공용 오버레이(Esc 메뉴 / 세션 리포트) — 어떤 테마 위에 떠도 어색하지 않도록
-   테마색과 무관한 중립 다크 스타일을 쓴다. */
+   테마색과 무관한 중립 스타일을 쓴다.
+   v0.1.18: 라이트/다크 모드 — 색은 전부 .at-scrim의 변수로 승격(다크 기본값 = 기존 값
+   그대로), 라이트는 말미의 override 블록에서 변수만 교체한다. */
 
 .at-scrim {
+  --at-scrim-bg: rgba(8, 9, 12, 0.72);
+  --at-panel-bg: #16181d;
+  --at-panel-fg: #e8e9ec;
+  --at-panel-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  --at-border: #2c2f36;
+  --at-border-hover: #3a3f4a;
+  --at-muted: #9aa0ad;
+  --at-faint: #7d8290;
+  --at-btn-bg: #1d2027;
+  --at-btn-hover-bg: #262a33;
+  --at-active-border: #5b8cff;
+  --at-active-bg: #1c2540;
+  --at-primary-bg: #2b3e78;
+  --at-primary-border: #45599c;
+  --at-primary-hover-bg: #34478c;
+  --at-primary-fg: #e8e9ec;
+  --at-danger-bg: #241a1c;
+  --at-danger-border: #4a2d31;
+  --at-line: #24262d;
+  --at-chip-bg: #1a1d24;
+  --at-chip-border: #262a33;
+  --at-chip-fg: #c2c4cc;
+  --at-success: #7ee787;
+
   position: fixed;
   inset: 0;
-  background: rgba(8, 9, 12, 0.72);
+  background: var(--at-scrim-bg);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
@@ -13,15 +39,42 @@
   padding: 24px;
 }
 
+/* v0.1.18: 라이트 팔레트 — 규칙 자체는 위 다크 기본값과 공유하고 변수만 바꾼다. */
+:root[data-color-mode='light'] .at-scrim {
+  --at-scrim-bg: rgba(18, 20, 26, 0.38);
+  --at-panel-bg: #ffffff;
+  --at-panel-fg: #23252b;
+  --at-panel-shadow: 0 24px 64px rgba(30, 34, 44, 0.25);
+  --at-border: #dcdee3;
+  --at-border-hover: #c6c9d0;
+  --at-muted: #6c717c;
+  --at-faint: #858a94;
+  --at-btn-bg: #f4f4f6;
+  --at-btn-hover-bg: #ebecef;
+  --at-active-border: #3f6ae0;
+  --at-active-bg: #e9efff;
+  --at-primary-bg: #2f54c9;
+  --at-primary-border: #2746a8;
+  --at-primary-hover-bg: #3a61de;
+  --at-primary-fg: #ffffff;
+  --at-danger-bg: #fbeeee;
+  --at-danger-border: #e8c8cb;
+  --at-line: #e7e9ed;
+  --at-chip-bg: #f4f4f6;
+  --at-chip-border: #e2e4e9;
+  --at-chip-fg: #4a4e58;
+  --at-success: #1e8c43;
+}
+
 .at-panel {
   width: min(560px, 100%);
   max-height: min(720px, 90vh);
   overflow-y: auto;
-  background: #16181d;
-  color: #e8e9ec;
-  border: 1px solid #2c2f36;
+  background: var(--at-panel-bg);
+  color: var(--at-panel-fg);
+  border: 1px solid var(--at-border);
   border-radius: 12px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--at-panel-shadow);
   padding: 28px 28px 24px;
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
 }
@@ -40,12 +93,12 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #7d8290;
+  color: var(--at-faint);
   margin: 0 0 4px;
 }
 
 .at-panel-sub {
-  color: #9aa0ad;
+  color: var(--at-muted);
   font-size: 0.88rem;
   margin: 0 0 20px;
 }
@@ -60,7 +113,7 @@
 
 .at-menu-label {
   font-size: 0.75rem;
-  color: #7d8290;
+  color: var(--at-faint);
   margin: 0 0 8px;
 }
 
@@ -72,9 +125,9 @@
 
 .at-btn {
   appearance: none;
-  border: 1px solid #2c2f36;
-  background: #1d2027;
-  color: #e8e9ec;
+  border: 1px solid var(--at-border);
+  background: var(--at-btn-bg);
+  color: var(--at-panel-fg);
   border-radius: 8px;
   padding: 10px 14px;
   font: inherit;
@@ -89,13 +142,13 @@
 }
 
 .at-btn:hover {
-  background: #262a33;
-  border-color: #3a3f4a;
+  background: var(--at-btn-hover-bg);
+  border-color: var(--at-border-hover);
 }
 
 .at-btn[data-active='true'] {
-  border-color: #5b8cff;
-  background: #1c2540;
+  border-color: var(--at-active-border);
+  background: var(--at-active-bg);
 }
 
 .at-btn:disabled {
@@ -105,7 +158,7 @@
 
 .at-btn-tag {
   font-size: 0.7rem;
-  color: #7d8290;
+  color: var(--at-faint);
 }
 
 .at-actions {
@@ -120,17 +173,18 @@
 }
 
 .at-btn-primary {
-  background: #2b3e78;
-  border-color: #45599c;
+  background: var(--at-primary-bg);
+  border-color: var(--at-primary-border);
+  color: var(--at-primary-fg);
 }
 
 .at-btn-primary:hover {
-  background: #34478c;
+  background: var(--at-primary-hover-bg);
 }
 
 .at-btn-danger-ish {
-  background: #241a1c;
-  border-color: #4a2d31;
+  background: var(--at-danger-bg);
+  border-color: var(--at-danger-border);
 }
 
 /* --- SessionReport --- */
@@ -148,7 +202,7 @@
   flex-direction: column;
   gap: 2px;
   margin-bottom: 20px;
-  border-top: 1px solid #24262d;
+  border-top: 1px solid var(--at-line);
 }
 
 .at-brag-line {
@@ -156,7 +210,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid #24262d;
+  border-bottom: 1px solid var(--at-line);
 }
 
 .at-brag-icon {
@@ -183,7 +237,7 @@
 }
 
 .at-brag-label {
-  color: #9aa0ad;
+  color: var(--at-muted);
   font-size: 0.85rem;
   flex: 1 1 auto;
 }
@@ -196,7 +250,7 @@
 }
 
 .at-brag-caption {
-  color: #7d8290;
+  color: var(--at-faint);
   font-size: 0.76rem;
   line-height: 1.4;
 }
@@ -211,7 +265,7 @@
 
 .at-copy-feedback {
   font-size: 0.78rem;
-  color: #7ee787;
+  color: var(--at-success);
   margin-left: 8px;
 }
 
@@ -242,12 +296,12 @@
 
 .at-mistakes-label {
   font-size: 0.78rem;
-  color: #9aa0ad;
+  color: var(--at-muted);
 }
 
 .at-mistakes-caret {
   flex: none;
-  color: #7d8290;
+  color: var(--at-faint);
   font-size: 0.72rem;
 }
 
@@ -264,16 +318,16 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #1a1d24;
-  border: 1px solid #262a33;
+  background: var(--at-chip-bg);
+  border: 1px solid var(--at-chip-border);
   border-radius: 6px;
   padding: 3px 8px;
   font-size: 0.82rem;
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-  color: #c2c4cc;
+  color: var(--at-chip-fg);
 }
 
 .at-mistakes-count {
-  color: #7d8290;
+  color: var(--at-faint);
   font-size: 0.74rem;
 }

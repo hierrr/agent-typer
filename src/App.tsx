@@ -15,6 +15,8 @@
  * 루트 컨테이너(.term-root/.chat-root/.desk-backdrop)가 이 변수를 height 폴백 체인의
  * 최우선 값으로 사용한다(100vh → 100dvh → var(--app-vvh, 100dvh)). visualViewport
  * 미지원 브라우저는 이 effect가 조용히 no-op하고 100dvh/100vh 폴백만 적용된다.
+ * v0.1.18: 라이트/다크 모드 — useColorMode(ui/color-mode.ts)가 설정 저장·기기 설정 추적·
+ * <html data-color-mode> 반영을 전담하고, App은 Esc 메뉴에 설정값·변경 콜백만 넘긴다.
  */
 
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
@@ -25,6 +27,7 @@ import { generateReport } from './engine/exaggerate';
 import { allWorkflows } from './data';
 import { getTheme, listThemes, resolveThemeId, type WorkflowMeta } from './themes/theme-api';
 import { TerminalTheme } from './themes/terminal/TerminalTheme';
+import { useColorMode } from './ui/color-mode';
 import { MenuOverlay } from './ui/MenuOverlay';
 import { SessionReport } from './ui/SessionReport';
 
@@ -43,6 +46,7 @@ type Screen = 'game' | 'report';
 
 export default function App() {
   const [themeId, setThemeId] = useState<ThemeId>('terminal');
+  const [colorMode, setColorMode] = useColorMode();
   const [screen, setScreen] = useState<Screen>('game');
   const [menuOpen, setMenuOpen] = useState(false);
   const [rounds, setRounds] = useState<RoundStats[]>([]);
@@ -202,6 +206,8 @@ export default function App() {
                 setThemeId(id);
                 setMenuOpen(false);
               }}
+              colorMode={colorMode}
+              onSelectColorMode={setColorMode}
               onEndWorkflow={handleEndWorkflow}
               onSwitchWork={handleSwitchWork}
               onClose={() => setMenuOpen(false)}
